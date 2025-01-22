@@ -1,0 +1,6 @@
+{
+    "editor.formatOnPaste": true,
+    "files.exclude": {
+        "**/.vscode": true
+    }
+}
