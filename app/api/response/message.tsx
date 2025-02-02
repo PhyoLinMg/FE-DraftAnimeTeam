@@ -1,0 +1,3 @@
+type GeneralResponse={
+    message:String,
+}
