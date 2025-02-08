@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Route } from "./+types/home_page";
-import {fetchBoard} from "../api/service";
-import { AxiosError } from "axios";
-import { CustomError } from "~/api/exception/CustomError";
-import ListView from "~/components/utils/ListView";
+import BattleListView from "~/components/utils/BattleListView";
+import useChannelHook from "~/hook/useChannelHook";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -14,30 +12,13 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const [data,setData] = useState<Board[]>();
-  const [error, setError] = useState<String | null>(null);
-  const getBoard = async () => {
-    try {
-      const result = await fetchBoard();
-      setData(result.data);
-    } catch (error) {
-        if(error instanceof CustomError){
-          setError(error.message);
-        }
-    } finally {
-      console.log("finally");
-    }
-  }
-
-  useEffect(()=>{
-    getBoard();
-  },[]);
-
+  const message= useChannelHook();
+  
   return (
-    <div>
+    <>
+      <p>{message}</p>
       <h1>Data</h1>
-      <pre>{JSON.stringify(data)}</pre>
-      <ListView></ListView>
-    </div>
+      <BattleListView></BattleListView>
+    </>
   );
 }

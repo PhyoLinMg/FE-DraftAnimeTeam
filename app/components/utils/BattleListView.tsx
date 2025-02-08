@@ -1,29 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { fetchBattles } from '~/api/service';
+import BoardComponent from '../board/board';
 
 
-interface Test{
-    id:number,
-    name:String,
-}
-
-const mockData = [
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-    { id: 3, name: 'Item 3' },
-    { id: 3, name: 'Item 3' },
-    { id: 3, name: 'Item 3' },
-    { id: 3, name: 'Item 3' },
-    { id: 3, name: 'Item 3' },
-    { id: 3, name: 'Item 3' },
-    { id: 3, name: 'Item 3' },
-    { id: 3, name: 'Item 3' },
-    { id: 3, name: 'Item 3' },
-    { id: 3, name: 'Item 3' },
-    // ... add more items as needed
-];
-
-const ListView = () => {
-    const [items, setItems] = useState<Test[]>();
+const BattleListView = () => {
+    const [items, setItems] = useState<Battle[]>();
     const [totalPage, setTotalPage] = useState<number>();
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isLoading, setIsLoading] = useState<Boolean>(true);
@@ -33,13 +14,13 @@ const ListView = () => {
             try {
                 // Simulate API call
                 setIsLoading(true);
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                const result = await fetchBattles(currentPage);
                 console.log('page',currentPage);
                 setIsLoading(false);
 
-                setItems(mockData);
+                setItems(result.data);
 
-                setTotalPage(10);
+                setTotalPage(result.meta.last_page);
             } catch (error) {
                 console.error('Error fetching items:', error);
             } finally {
@@ -64,25 +45,14 @@ const ListView = () => {
                         <div className="space-y-4">
                             {items?.map((item, index) => (
                                 <div key={index} className="p-4 border rounded">
-                                    <h3 className="font-semibold">{item.name}</h3>
-                                    <button
-                                        onClick={() => {}}
-                                        className="mr-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => {}}
-                                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                                    >
-                                        Delete
-                                    </button>
+                                    <h3 className="font-semibold">{item.board}</h3>
+                                    <BoardComponent characters={item.characters}></BoardComponent>
                                 </div>
                             ))}
                         </div>
                     
 
-                    <div className="mt-6 flex justify-center gap-2">
+                    <div className="mt-6 flex justify-center gap-2 items-center">
                         <button
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
@@ -91,7 +61,7 @@ const ListView = () => {
                         >
                             Previous
                         </button>
-                        <span className="text-gray-600">Page {currentPage} of {totalPage}</span>
+                        <span className="text-gray-600 justify-center">Page {currentPage} of {totalPage}</span>
                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPage}
@@ -107,4 +77,4 @@ const ListView = () => {
     );
 };
 
-export default ListView;
+export default BattleListView;

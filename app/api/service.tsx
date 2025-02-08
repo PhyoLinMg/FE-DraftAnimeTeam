@@ -23,9 +23,13 @@ export const fetchBoard = async (): Promise<BoardsData> => {
   }
 };
 
-export const fetchBattles= async (): Promise<Battle> =>{
+export const fetchBattles= async (page:number): Promise<BattleResponse> =>{
     try {
-        const response: AxiosResponse<Battle> = await apiClient.get('battles');
+        const response: AxiosResponse<BattleResponse> = await apiClient.get('battles', {
+            params: {
+                page: page
+            }
+        });
         return response.data;
     } catch (error: any) {  // Add type annotation for error parameter
         if (axios.isAxiosError(error)) {  // Make sure axios is imported
